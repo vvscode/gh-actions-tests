@@ -20,5 +20,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Cat actions.yml
-        # we use `echo` to see result in the logs 
-        run: echo | cat .github/workflows/actions.yml
+        run: cat .github/workflows/actions.yml
