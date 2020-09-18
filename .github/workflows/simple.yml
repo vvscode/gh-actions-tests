@@ -1,0 +1,17 @@
+name: Shell Commands
+
+on: [push, pull_request]
+
+jobs:
+  run-shell-command:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Echo a stirng
+        run: echo "Hello from action"
+
+      - name: multiline script
+        run: |
+          node -v
+          npm -v
+          printenv
