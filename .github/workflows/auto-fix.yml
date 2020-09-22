@@ -1,0 +1,50 @@
+name: Auto fix your code
+
+on: pull_request
+
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Packages
+        run: |
+          npm install
+
+      - name: Lint check
+        run: |
+          npm run lint:check
+
+  fix-linting:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # https://github.com/actions/checkout#checkout-pull-request-head-commit-instead-of-merge-commit
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install Packages
+        run: |
+          npm install
+        
+      - name: Fix linting
+        run: |
+          npm run lint:fix
+
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Fix linting" -a
+
+      - name: Push changes
+        # https://github.com/ad-m/github-push-action/issues/65
+        uses: ad-m/github-push-action@40bf560936a8022e68a3c00e7d2abefaf01305a6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # https://github.com/ad-m/github-push-action/issues/38
+          # NB: you can use it only on `pull_request` trigger
+          branch: ${{ github.head_ref }}
