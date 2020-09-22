@@ -1,0 +1,48 @@
+name: Auto fix your code
+
+on: push
+
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Packages
+        run: |
+          npm install
+
+      - name: Lint check
+        run: |
+          npm run lint:check
+
+  fix-linting:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Packages
+        run: |
+          npm install
+        
+      - name: Fix linting
+        run: |
+          npm run lint:fix
+
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Fix linting" -a
+
+      - name: Push changes
+        # https://github.com/ad-m/github-push-action/issues/65
+        uses: ad-m/github-push-action@40bf560936a8022e68a3c00e7d2abefaf01305a6
+        env:
+          # https://github.com/ad-m/github-push-action/issues/38
+          # https://github.com/ad-m/github-push-action/blob/master/start.sh#L29
+          INPUT_BRANCH: ${GITHUB_REF#refs/heads/} 
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
