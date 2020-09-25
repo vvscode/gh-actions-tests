@@ -1,0 +1,24 @@
+name: Multiple docker containers
+on: push
+
+jobs:
+  dockerized-api:
+    runs-on: ubuntu-latest
+
+    services:
+      app: 
+        image: alialaa17/node-api
+        ports:
+          - 3001:3000
+      mongo:
+        image: mongo
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Post a user
+        run: |
+          curl -X POST http://localhost:3001/api/user -H 'Content-Type: application/json' -d '{"username": "Bob", "address":"the world"}'
+      - name: Get users
+        run: |
+          curl -X GET http://localhost:3001/api/users -H 'Content-Type: application/json'
