@@ -1,0 +1,23 @@
+name: Add codesandbox link
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  codesandbox-comment:
+    name: Add codesandbox link comment
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+        printenv
+        echo "${{ toJSON( job ) }}"
+        echo "${{ toJSON( github ) }}"
+
+
+      - uses: mshick/add-pr-comment@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          message: |
+            Hello man
